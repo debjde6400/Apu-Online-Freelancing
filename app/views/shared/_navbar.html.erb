@@ -1,0 +1,37 @@
+<nav class="navbar navbar-expand-md">
+  <div class="container-fluid">
+    <%= link_to 'Apu Online Freelancing', root_path, class: "navbar-brand" %>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-md-between" id="navbarNav">
+      <form class="d-flex">
+        <input class="form-control" type="search" placeholder="Search by industry" aria-label="Search">
+        <button class="btn btn-success" type="submit">Search</button>
+      </form>
+
+      <ul class="navbar-nav">
+        <% if logged_in? %>
+          <li class="nav-item">
+            <%= link_to current_user.name, siteuser_path(current_user), class: "nav-link" %>
+          </li>
+
+          <li class="nav-item">
+            <%= link_to "Log Out", logout_path, method: :delete, class: "nav-link" %>
+          </li>
+
+        <% else %>
+          <li class="nav-item">
+            <%= link_to "Log In", login_path, class: "nav-link" %>
+          </li>
+
+          <li class="nav-item">
+            <%= link_to "Join Us", new_siteuser_path, class: "nav-link" %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,21 @@
+<table>
+  <th>
+    All users
+  </th>
+  <% @users.each do |u| %>
+    <tr>
+      <td>
+        <%= link_to u.name, siteuser_path(u) %>
+      </td>
+      <td>
+        <%= u.email %>
+      </td>
+      <td>
+        <%= u.mobile %>
+      </td>
+      <td>
+        <%= u.freelancer %>
+      </td>
+    </tr>
+  <% end %>
+</table>

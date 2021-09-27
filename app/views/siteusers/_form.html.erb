@@ -1,0 +1,64 @@
+<%= form_with model: @user do |f| %>
+  <%= render "shared/form_errors", form: f %>
+
+  <div class="form-group">
+    <%= f.label :name %>
+    <%= f.text_field :name, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :freelancer %>
+    <%= f.label :freelancer, "Freelancer", value: "true" %>
+    <%= f.radio_button :freelancer, true %>
+    <%= f.label :freelancer, "Client", value: "false" %>
+    <%= f.radio_button :freelancer, false, checked: true %>
+    
+  </div>
+  
+  <div class="form-group">
+    <%= f.label :email %>
+    <%= f.email_field :email, class: 'form-control' %>
+  </div>
+  
+  <div class="form-group">
+    <%= f.label :mobile %>
+    <%= f.text_field :mobile, class: 'form-control' %>
+  </div>
+  
+  <div class="form-group">
+    <%= f.label :address %>
+    <%= f.text_area :address, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :image, class: "form-label" %>
+    <%= f.file_field :image, class: "form-field" %>
+  </div>
+  
+  <div class="form-group">
+    <%= f.label :qualification, "Qualification (Set None if registering as client)" %>
+    <%= f.select :qualification, options_for_select(["None", "Class 12 or below", "Bachelor degree", "Masters degree", "Doctorate"], f.object.qualification || @user.qualification), class: 'form-control' %>
+  </div>
+  
+  <div class="form-group">
+    <%= f.label :experience %>
+    <%= f.text_area :experience, class: 'form-control', placeholder: "Freelancers can describe their work positions along with time periods here. Clients can provide a brief description of establishments and  technologies handled by them." %>
+  </div>
+  
+  <div class="form-group">
+    <%= f.label :industry %>
+    <%= f.select :industry, options_for_select(get_all_industry), selected: params[:industry], class: 'form-control' %>
+  </div>
+  
+  <div class="form-group">
+    <%= f.label :password %>
+    <%= f.password_field :password, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :password_confirmation, "Confirm your password" %>
+    <%= f.password_field :password_confirmation, class: 'form-control' %>
+  </div>
+
+  <%= f.submit task, class: "btn btn-primary" %>
+<% end %>

@@ -31,3 +31,11 @@
 
 en:
   hello: "Hello world"
+  notifications:
+    project_notification:
+      message: "Your project %{project_title} has a new bid."
+    bid_accepted_notification: 
+      message: "Your bid on project %{project_title} has been accepted."
+    bid_rejected_notification: 
+      message: "Your bid on project %{project_title} has been rejected."
+    

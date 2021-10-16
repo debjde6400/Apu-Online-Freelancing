@@ -1,0 +1,19 @@
+<%= form_with(model: @project, url: send_files_project_path) do |f| %>
+  <%= render "shared/form_errors", form: f %>
+
+  <% if @project.freelancer_sent_files.attached? %>
+    <% @project.freelancer_sent_files.each do |fl| %>
+      <div>
+        <%= link_to fl.filename, fl %>
+      </div>
+      <%= f.hidden_field :freelancer_sent_files, multiple: true, value: fl.signed_id %>
+    <% end %>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label :freelancer_sent_files, "Enclose files to be sent here" %>
+    <%= f.file_field :freelancer_sent_files, multiple: true %>
+  </div>
+  <%= f.submit "Upload", class: "btn btn-primary" %>
+
+<% end %>

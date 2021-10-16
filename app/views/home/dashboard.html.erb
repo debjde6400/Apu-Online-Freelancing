@@ -1,0 +1,72 @@
+<main>
+  <div class="row">
+    <div class="col-md-9">
+      <h1>
+        Dashboard
+      </h1>
+
+      <%= link_to 'View your profile', siteuser_path(current_user), class: "btn btn-primary" %>
+
+      <section class="dashboard-stats">
+        <% if current_user.client? %>
+        <h2>
+          Your projects
+        </h2>
+        
+        <div>
+          <span class="project-count">
+            <%= current_user.creating_client_projects.count %> 
+          </span>
+
+          project(s) posted
+        </div>
+        
+        <section class="all-projects">
+          <% current_user.creating_client_projects.each do |p| %>
+          <div>
+            <div>
+              <%= link_to p.title, project_path(p), class: 'project-link' %>
+            </div>
+            <div>
+              Posted on <%= p.created_at %>
+            </div>
+          </div>
+          <% end %>
+        </section>
+
+          <div>
+            <%= link_to '+ New project', new_siteuser_project_path(current_user), class: "btn btn-primary" %>
+          </div>
+
+        <% else %>
+          <%= link_to 'View your bids', current_bids_siteuser_path(current_user), class: "btn btn-primary" %>
+        <% end %>
+      </section>
+
+    </div>
+
+    <div class="col-md-3">
+      <%= image_tag current_user.displayed_image, loading: "lazy", alt: current_user.name, class: "img-thumbnail" %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md">
+      <h2>
+        Notifications
+      </h2>
+
+      <% current_user.notifications.newest_first.each do |nf| %>
+        <div class="notification">
+          <div>
+            <%= nf.to_notification.message %>
+          </div>
+
+          <div class="timestamp">
+            <%= nf.created_at %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</main>

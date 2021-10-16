@@ -1,0 +1,5 @@
+<% @projects.each do |pr| %>
+  <div>
+    <%= link_to pr.title, project_path(pr) %>
+  </div>
+<% end %>

@@ -1,0 +1,13 @@
+<h1>Bids for individual project </h1>
+
+<h2>
+  Project name: <%= @project.title %>
+</h2>
+
+<% @bids.each do |b| %>
+  <div>
+    Bid by: <%= b.bidding_user.name %>
+    Time: <%= b.created_at %>
+    <%= link_to 'View details', bid_path(b) %>
+  </div>
+<% end %>

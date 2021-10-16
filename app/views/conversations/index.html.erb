@@ -1,0 +1,29 @@
+<h1>
+  All users
+</h1>
+
+<div>
+  <% @freelancers.each do |u| %>
+    <%= link_to "Message #{u.name}", conversations_path(sender_id: current_user.id, recipient_id: u.id), method: 'post' if u != current_user %>
+  <% end %>
+</div>
+
+<h2>
+  Conversations
+</h2>
+
+<% @conversations.each do |conversation| %>
+  <% if conversation.sender_id == current_user.id || conversation.recipient_id == current_user.id %>
+    <% if conversation.sender_id == current_user.id %>
+      <% recipient = Siteuser.find(conversation.recipient_id) %>
+    <% else %>
+      <% recipient = Siteuser.find(conversation.sender_id) %>
+    <% end %>
+
+    <% unless current_user.id == conversation.recipient_id %>
+      <div>
+        <%= link_to recipient.name, conversation_messages_path(conversation) %>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>

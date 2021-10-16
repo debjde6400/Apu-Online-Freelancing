@@ -2,13 +2,26 @@ class Siteuser < ApplicationRecord
   attr_accessor :remember_token, :activation_token, :reset_token
   before_save :downcase_email
   before_create :create_activation_digest
-  has_one_attached :image
+  has_one_attached :image do |attachable|
+    attachable.variant :thumb, resize: "100x100"
+  end
+
   EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   validates :email, presence: true, length: { maximum: 255 }, 
   format: { with: EMAIL_REGEX }, uniqueness: { case_sensitive: false }
-  validates :password, presence: true, allow_nil: true
   
+  validates :password, presence: true, allow_nil: true
   has_secure_password
+  scope :freelancers, -> { where freelancer: true }
+  scope :clients, -> { where freelancer: false }
+  has_many :creating_client_projects, class_name: 'Project', foreign_key: 'creating_client_id'
+  has_many :awarded_freelancer_projects, class_name: 'Project', foreign_key: 'awarded_freelancer_id'
+  has_many :bidding_user_bids, class_name: 'Bid', foreign_key: 'bidding_user_id'
+  has_many :notifications, as: :recipient
+
+  def client?
+    !self.freelancer?
+  end
 
   def Siteuser.digest(string)
     cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST : BCrypt::Engine.cost
@@ -63,9 +76,9 @@ class Siteuser < ApplicationRecord
 
   def displayed_image
     if image.attached?
-      image
+      image.variant(resize: '400X400!').processed
     else
-      "3d-hd-wallpaper-radha-krishna-download.jpg"
+      "56939.jpg"
     end
   end
 

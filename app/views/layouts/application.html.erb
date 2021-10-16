@@ -15,11 +15,11 @@
 
   <body>
     <%= render partial: "shared/navbar" %>
-    <div class="container mb-3">
-      <div class="errors">
-        <%= render partial: "shared/flash" %>
-      </div>
+    <div class="errors">
+      <%= render partial: "shared/flash" %>
+    </div>
 
+    <div class="container mt-4">
       <%= yield %>
     </div>
   </body>

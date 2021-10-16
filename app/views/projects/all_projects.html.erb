@@ -1,0 +1,7 @@
+<h1>Projects Index</h1>
+<% @all_projects.each do |p| %>
+  <div>
+    <%= link_to (p.title.present? ? p.title : "<N/A>" ), project_path(p) %>
+    Posted by: <%= p.creating_client.name %>
+  </div>
+<% end %>

@@ -1,15 +1,72 @@
-<div>
-  User : <%= @user.name %>
-</div>
+<main>
+  <div class="row">
+    <div class="col-md-9">
+      <h1>
+        <%= @user.name %>
+      </h1>
 
-<div>
-  Email: <%= @user.email %>
-</div>
+      <span class="badge bg-secondary">
+        <%= print_type(@user) %>
+      </span>
 
-<div>
-  Mobile: <%= @user.mobile %>
-</div>
+      <% if @user.admin? %>
+        <span class="badge bg-success">
+          ADMIN
+        </span>
+      <% end %>
 
-<%= image_tag @user.displayed_image, loading: "lazy", alt: @user.name, class: "rounded-full" %>
+      <section class="personal-details">
+        <div>
+          <%= image_tag("envelope.svg", width: "24") %>
+          <%= @user.email %>
+        </div>
 
-<%= link_to 'Edit details', edit_siteuser_path(@user), class: "btn btn-primary" %>
+        <div>
+          <%= image_tag("phone.svg", width: "24") %>
+          <%= @user.mobile %>
+        </div>
+
+        <div>
+          <%= image_tag("home_black_24dp.svg", width: "24") %>
+          <%= @user.address %>
+        </div>
+        
+        <div>
+          <%= image_tag("school_black_24dp.svg", width: "24") %>
+          <%= @user.qualification %>
+        </div>
+
+        <div>
+          <%= image_tag("construction_black_24dp.svg", width: "24") %>
+          <%= @user.industry %>
+        </div>
+      </section>
+
+      <section class="skills">
+        <h2>
+          Skills
+        </h2>
+
+        <% @user.skills.each do |s| %>
+          <span class="badge bg-dark">
+            <%= s.capitalize %>
+          </span>
+        <% end %>
+      </section>
+
+      <section class="experience">
+        <h2>
+          Experience
+        </h2>
+
+        <%= @user.experience %>
+      </section>
+
+      <%= link_to 'Edit details', edit_siteuser_path(@user), class: "btn btn-primary" if current_user? @user %>
+    </div>
+
+    <div class="col-md-3">
+      <%= image_tag @user.displayed_image, loading: "lazy", alt: @user.name, class: "img-thumbnail" %>
+    </div>
+  </div>
+</main>

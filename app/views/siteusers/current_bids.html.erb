@@ -1,0 +1,7 @@
+<% @current_bids.each do |b| %>  
+  <div>
+    Project: <%= Project.find(b.project_id).title %>
+  </div>
+
+  <%= link_to "Edit", edit_bid_path(b) %>
+<% end %>

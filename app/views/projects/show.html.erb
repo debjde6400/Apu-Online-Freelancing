@@ -1,0 +1,44 @@
+<h1>
+  <%= @project.title %>
+</h1>
+
+<div>
+  <%= @project.description %>
+</div>
+
+<div>
+  Posted by : <%= @project.creating_client.name %>
+</div>
+
+<% if !@project.awarded_freelancer.nil? %>
+  Awarded to : <%= @project.awarded_freelancer.name %>
+  <%= link_to 'Send project files', freelancer_files_project_path if logged_in? %>
+<% end %>
+
+<div>
+  <% if @project.client_files.attached? %>
+    <% @project.client_files.each do |cf| %>
+      <%= link_to cf.filename, cf %>
+    <% end %>
+  <% end %>
+</div>
+
+<%= link_to "Edit", edit_project_path(@project), class: "btn btn-primary" if correct_user @project.creating_client %>
+
+<% if logged_in? && current_user.freelancer? %>
+  <% if @user_bid.empty? %>
+    <%= link_to "Bid for it", new_project_bid_path(@project), class: "btn btn-primary" %>
+  <% else %>
+    <%= link_to "Show your bid", bid_path(@user_bid), class: "btn btn-primary" %>
+  <% end %>
+<% end %>
+
+<%= link_to 'View all bids', project_bids_path(@project), class: "btn btn-primary" %>
+
+<% if logged_in? %>
+  <% if current_user != @project.creating_client %>
+    <%= link_to "Message #{@project.creating_client.name}", conversations_path(sender_id: current_user.id, recipient_id: @project.creating_client.id), method: 'post' %>
+  <% else %>
+    <%= link_to "Conversations", conversations_path %>
+  <% end %>
+<% end %>

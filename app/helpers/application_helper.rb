@@ -9,7 +9,7 @@ module ApplicationHelper
 
   def correct_user(user)
     user = Siteuser.find(user.id)
-    if current_user? user || current_user.admin?
+    if current_user? user
       return user
     else
       return nil
@@ -18,5 +18,9 @@ module ApplicationHelper
 
   def get_user_by_siteuser_id(id)
     Siteuser.find(id)
+  end
+
+  def not_specified(attr)
+    "<p> No #{attr} specified. </p>".html_safe
   end
 end

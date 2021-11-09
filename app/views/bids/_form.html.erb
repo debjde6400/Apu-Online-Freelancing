@@ -1,0 +1,36 @@
+<div class="project-officials">
+  <div>
+    By : <%= current_user.name %>
+  </div>
+
+  <div>
+    On : <%= p.title %>
+  </div>
+</div>
+
+<%= render "shared/form_errors", form: f %>
+
+<div class="form-group">
+  <%= f.label :amount %>
+
+  <div class="input-group">
+    <span class="input-group-text">
+      <%= p.payment_currency %>
+    </span>
+    
+    <%= f.number_field :amount, value: number_to_currency(f.object.amount.to_f, delimiter: '', unit: ''), max: p.highest_pay, step: :any, placeholder: "Highest: #{p.highest_pay}", class: "form-control" %>
+
+    <span class="input-group-text">
+      <%= p.payment_time_unit %>
+    </span>
+  </div>
+  
+  <span class="form-text">
+    Max value: <%= p.highest_pay %>
+  </span>
+</div>
+
+<div class="form-group">
+  <%= f.label :description %>
+  <%= f.text_area :description, rows: 10, class: "form-control" %>
+</div>

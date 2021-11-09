@@ -1,0 +1,12 @@
+<div class="form-group">
+  <%= f.label :skills, "Choose your skills", class: "form-label" %>
+
+  <div>
+    <% get_all_skill.each do |key| %>
+      <div class="form-check form-check-inline">
+        <%= f.check_box :skills, { class: "form-check-input", multiple: true, checked: f.object.skills&.include?(key.to_s) }, key, nil %>
+        <%= f.label key, class: "form-check-label" %>
+      </div>
+    <% end %>
+  </div>
+</div>

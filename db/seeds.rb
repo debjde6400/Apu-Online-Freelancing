@@ -5,24 +5,29 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+include ApplicationHelper
 
-Siteuser.create!(
+all_skills = get_all_skill
+
+dd = Siteuser.create!(
   name:  "Debanjan Dey",
   email: "debanjandey64@gmail.com",
-  password: "abbajabba",
-  password_confirmation: "abbajabba",
+  password: "admin",
+  password_confirmation: "admin",
   admin:     true,
   approved:  true,
   activated: true,
-  activated_at: Time.zone.now
+  activated_at: Time.zone.now,
+  skills: all_skills[0..8] + [all_skills[16], all_skills[19]]
 )
+dd.profile_pic.attach(io: File.open(Rails.root.join('app', 'assets', 'images', '56939.jpg')), filename: '56939.jpg', content_type: 'image/jpg')
 
 20.times do |n|
   name  = Faker::Name.name
   email = "u#{n+1}@hinde.com"
   mobile = "8#{Faker::Number.number(digits: 8)}#{n%10}"
   password = "abba"
-  Siteuser.create!(name:  name,
+  u1 = Siteuser.create!(name:  name,
               email: email,
               mobile: mobile,
               password:              password,
@@ -30,26 +35,39 @@ Siteuser.create!(
               freelancer: ([0, 6, 7, 12, 14, 18].include?(n) ? true : false),
               approved:  true,
               activated: true,
-              activated_at: Time.zone.now)
+              activated_at: Time.zone.now,
+              skills: all_skills.sample(8))
+  u1.profile_pic.attach(io: File.open(Rails.root.join('app', 'assets', 'images', '56939.jpg')), filename: '56939.jpg', content_type: 'image/jpg')
 end
 
-5.times do |n|
+15.times do |n|
   name  = Faker::Name.name
   email = "u#{n+1}@khich.com"
   mobile = "8#{Faker::Number.number(digits: 9)}"
   password = "abba"
-  Siteuser.create!(name:  name,
+  u2 = Siteuser.create!(name:  name,
               email: email,
               mobile: mobile,
               password:              password,
               password_confirmation: password,
-              freelancer: ([2, 4].include?(n) ? true : false))
+              freelancer: true,
+              skills: all_skills.sample(6))
+  u2.profile_pic.attach(io: File.open(Rails.root.join('app', 'assets', 'images', '56939.jpg')), filename: '56939.jpg', content_type: 'image/jpg')
 end
 
+skills1 = all_skills[4..7] + [all_skills[15]]
+skills2 = all_skills[0..3] + [all_skills[20]]
+skills3 = all_skills[4..7] + [all_skills[11], all_skills[22]]
+skills4 = [all_skills[2], all_skills[21], all_skills[22]]
+
 Project.create!(
+  creating_client_id: 3,
   title: 'Rails project for banking',
   description: 'Reputed bank wants to develop new website.',
-  creating_client_id: 3
+  payment_currency: 'INR',
+  highest_pay: 25000,
+  payment_time_unit: '(onetime)',
+  skills: skills1
 )
 
 Project.create!(
@@ -58,45 +76,57 @@ Project.create!(
   creating_client_id: 7,
   highest_pay: 120,
   payment_currency: 'USD',
-  payment_time_unit: 'per hour'
+  payment_time_unit: 'per hour',
+  skills: skills2
 )
 
 Project.create!(
   title: 'Admin Project',
   description: 'Website maintanence.',
-  creating_client_id: 1
+  creating_client_id: 3,
+  payment_currency: 'INR',
+  highest_pay: 250,
+  payment_time_unit: 'per day',
+  skills: skills3
 )
 
 Project.create!(
   title: 'Cloud using eclipse for data storage',
   description: 'Build cloud using eclipse and cloudsim then connect it with SQL server.',
-  creating_client_id: 15
+  creating_client_id: 15,
+  payment_currency: 'INR',
+  highest_pay: 120,
+  payment_time_unit: 'per day',
+  skills: skills4
 )
 
+bidder_list_1 = Siteuser.freelancers.active.select { |u| u.skills & skills1 != [] }
+bidder_list_2 = Siteuser.freelancers.active.select { |u| u.skills & skills2 != [] }
+
 Bid.create!(
-  bidding_user_id: 2,
+  bidding_user_id: bidder_list_1[0].id,
   project_id: 1,
   description: "Work please!",
-  amount: "200"
+  amount: "20000"
 )
 
 Bid.create!(
-  bidding_user_id: 8,
+  bidding_user_id: bidder_list_1[1].id,
   project_id: 1,
   description: "Work please!",
-  amount: "300"
+  amount: "15000"
 )
 
 Bid.create!(
-  bidding_user_id: 2,
+  bidding_user_id: bidder_list_2[0].id,
   project_id: 2,
   description: "Work please!",
-  amount: "50"
+  amount: "105"
 )
 
 Bid.create!(
-  bidding_user_id: 9,
+  bidding_user_id: bidder_list_1[2].id,
   project_id: 1,
   description: "Work please!",
-  amount: "170"
+  amount: "17000"
 )

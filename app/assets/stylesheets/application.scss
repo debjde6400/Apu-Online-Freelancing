@@ -12,27 +12,52 @@
  *
  */
 
-/*@import "bootstrap"; */
+@import "bootstrap/scss/bootstrap";
+@import "siteusers";
+@import "projects";
+@import "conversations";
 
-$accent-color-main: #2230AF;
+$accent-color-main: #005A8F;
+$nav-font-color: #E3F9FF;
+
+.intro {
+  background-image: url('09090_BG.jpg');
+  color: #FFFFFF;
+  padding: 20px;
+  height: 400px;
+}
+
+.non-underlined-link {
+  text-decoration: none;
+}
+
+.equally-distribute {
+  display: flex;
+  justify-content: space-between;
+}
 
 .navbar {
   background-color: $accent-color-main;
   padding: 10px 25px;
 
-  a {
-    color: #FFEFE2;
+  a.nav-link {
+    color: $nav-font-color;
   }
 }
 
 .navbar-brand {
+  color: $nav-font-color;
   letter-spacing: 1px;
   font-size: 20px;
   font-weight: 600;
 }
 
+.navbar-nav .dropdown-menu {
+  position: absolute;
+}
+
 .project-count {
-  font-size: 24px;
+  font-size: 84px;
   font-weight: 600;
 }
 
@@ -40,20 +65,8 @@ section {
   margin: 25px 0;
 }
 
-.all-projects {
-  margin: 20px;
-}
-
 .project-link {
-  font-size: 18px;
-  padding-right: 15px;
   text-decoration: none;
-}
-
-.notification {
-  background-color: #FFEFE2;
-  padding: 10px;
-  margin-bottom: 5px;
 }
 
 .timestamp {
@@ -61,13 +74,84 @@ section {
   font-size: 14px;
 }
 
-.skills .badge {
-  font-size: 16px;
-  margin-right: 5px;
+.form-group {
+  margin: 20px 0;
 }
 
-.custom-group-user {
+.login-dropdown, .notification-dropdown{
+  height: 360px;
+  width: 100%;
+}
+
+.notifications {
+  font-size: 14px;
+  position: relative;
+  overflow-y: auto;
+  height: 80%;
+  z-index: 1;
+}
+
+.badge-count {
+  position: absolute;
+  right: 8px;
+  font-size: 10px;
+}
+
+.navbar-toggler {
+  background-color: #FFFFFF;
+}
+
+.navbar-toggler-icon {
+  color: $accent-color-main;
+
+  svg {
+    width: 42px;
+    height: 36px;
+    margin-left: -6px;
+    margin-top: -3px;
+  }
+}
+
+.index-font-size {
+  font-size: 16px;
+
+  span {
+    display: block;
+  }
+}
+
+.positioned {
+  position: absolute;
+  z-index: 1;
+  text-align: center;
+  background-color: #FFFFFF;
+}
+
+.description, .message-body {
+  white-space: pre-line;
+  margin-top: -20px;
+  overflow-wrap: break-word;
+}
+
+.card-text p.text-truncate {
+  padding-right: 25%;
+}
+
+.pagination {
   display: flex;
-  justify-content: space-evenly;
-  margin: 20px 0;
+  justify-content: space-around;
+  margin-top: 8px;
+}
+
+.k-pages {
+  background-color: $accent-color-main;
+  color: #FFFFFF;
+  border: 2px solid #000000;
+  padding: 6px;
+}
+
+@media (min-width: 768px) {
+  .login-dropdown, .notification-dropdown {
+    width: 400%;
+  }
 }

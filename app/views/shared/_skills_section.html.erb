@@ -1,0 +1,16 @@
+<h2>
+  Skills
+</h2>
+
+<div class="skills">
+  <% if object.skills.empty? %>
+    This user has not specified any skills.
+
+  <% else %>
+    <% object.skills.each do |s| %>
+      <span class="badge bg-dark">
+        <%= s %>
+      </span>
+    <% end %>
+  <% end %>
+</div>

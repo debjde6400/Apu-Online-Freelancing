@@ -3,10 +3,9 @@ class AccountactivationsController < ApplicationController
     user = Siteuser.find_by(id: params[:id])
     if user && !user.activated?
       user.activate
-      redirect_to login_path, flash: { success: "Account activated. Just login again." }
+      redirect_to root_path, flash: { success: "Account activated. Just login again." }
     else
-      flash[:danger] = "Invalid activation link."
-      redirect_to root_url
+      redirect_to root_path, flash: { danger: "Invalid activation link." }
     end
   end
 end

@@ -7,6 +7,7 @@ class CreateProjects < ActiveRecord::Migration[6.1]
       t.string :payment_time_unit
       t.string :payment_currency
       t.boolean :bidding_closed, default: false
+      t.datetime :bidding_closed_at, precision: 6
       t.references :creating_client, null: false, foreign_key: { to_table: :siteusers }
       t.references :awarded_freelancer, foreign_key: { to_table: :siteusers }
 

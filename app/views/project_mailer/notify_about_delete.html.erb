@@ -1,0 +1,11 @@
+<p> Hello <%= @user.name %>, </p>
+
+<p>
+  One of your bidded projects, titled <strong> <%= @p_title %> </strong> has been deleted. Thus your bid on the project has been removed.
+</p>
+
+<p>
+  Check your bid list <%= link_to 'here', bid_history_siteuser_url(@user) %>.
+</p>
+
+<%= render "shared/thanks" %>

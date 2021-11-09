@@ -1,21 +1,55 @@
-<table>
-  <th>
-    All users
-  </th>
-  <% @users.each do |u| %>
-    <tr>
-      <td>
-        <%= link_to u.name, siteuser_path(u) %>
-      </td>
-      <td>
-        <%= u.email %>
-      </td>
-      <td>
-        <%= u.mobile %>
-      </td>
-      <td>
-        <%= print_type(u) %>
-      </td>
-    </tr>
-  <% end %>
-</table>
+<div class="equally-distribute align-items-center">
+  <h1>
+    Users list
+  </h1>
+
+  <%= link_to 'Search only freelancers', search_freelancers_siteusers_path %>
+</div>
+
+<section>
+  <h2 class="h5">
+    Search by industry
+  </h2>
+
+  <div class="form-group">
+    <%= form_with url: siteusers_path, method: :get, id: "user_search" do |f| %>
+      <% get_all_industry.each do |key| %>
+        <div class="form-check form-check-inline">
+          <%= f.check_box :searched_industries, { class: "form-check-input", multiple: true, onclick: "$('#user_search').submit()", checked: params[:searched_industries]&.include?(key.to_s) }, key, nil %>
+          <%= f.label key, class: "form-check-label" %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</section>
+
+<main>
+  <div class="row">
+    <% @users.each do |u| %>
+      <div class="col-md-6">
+        <section class="card">
+          <div class="card-body container">
+            <h3 class="card-title">
+              <%= link_to u.name, siteuser_path(u), class: "stretched-link non-underlined-link" %>
+            </h3>
+
+            <div class="card-text">
+              <div>
+                <%= print_type(u) %>
+              </div>
+
+              <div>
+                <%= u.email %>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="container text-center">
+    <%= page_entries_info @users %>
+    <%= paginate @users %>
+  </div>
+</main>

@@ -1,19 +1,36 @@
+<div class="d-flex justify-content-between">
+  <h2>
+    Log In
+  </h2> 
+
+  <%= link_to "New here? Join Us", new_siteuser_path, class: "non-underlined-link" %>                    
+</div>
+
 <%= form_for(:session, url: login_path) do |f| %>
+  <div class="form-group">
+    <%= f.label :email %>
+    <%= f.email_field :email, class: 'form-control' %>
+  </div>
+  
+  <div class="form-group">
+    <%= f.label :password %>
+    <%= f.password_field :password, class: 'form-control' %>
+  </div>
+  
+  <div class="d-flex justify-content-between mb-4">
+    <a role="button" data-bs-toggle="modal" href="#forgotPasswordModal">
+      Forgot Password?
+    </a>
+    <%#= link_to '', new_passwordreset_path %>
 
-  <%= f.label :email %>
-  <%= f.email_field :email, class: 'form-control' %>
+    <div class="form-check form-check-inline text-end">        
+      <%= f.check_box :remember_me, class: "form-check-input" %>
+      <%= f.label :remember_me, class: "form-check-label" %>
+    </div>
+  </div>
 
-  <%= f.label :password %>
-  <%= f.password_field :password, class: 'form-control' %>
-  <%= link_to 'Forgot Password?', new_passwordreset_path %>
-
-  <%= f.label :remember_me, class: "checkbox inline" do %>
-    <%= f.check_box :remember_me %>
-    <span>
-      Remember me on this computer
-    </span>
-  <% end %>
-
-  <%= f.submit "Log in", class: "btn btn-primary" %>
-
+  <div class="d-grid">
+    <%= f.submit "Log In", class: "btn btn-primary" %>
+  </div>
 <% end %>
+

@@ -22,6 +22,6 @@ class BidAcceptedNotification < Noticed::Base
   end
   
   def url
-    bid_path(params[:bid])
+    project_path(params[:bid].project)
   end
 end

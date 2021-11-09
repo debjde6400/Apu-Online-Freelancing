@@ -4,6 +4,7 @@ class CreateMessages < ActiveRecord::Migration[6.1]
       t.text :body
       t.references :conversation, index: true
       t.references :siteuser, index: true
+      t.datetime :read_at
 
       t.timestamps
     end

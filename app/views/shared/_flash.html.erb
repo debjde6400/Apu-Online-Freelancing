@@ -1,5 +1,14 @@
+<% used_icon = { 
+  'success' => 'check-circle-fill',
+  'info' => 'info-fill',
+  'warning' => 'exclamation-triangle-fill',
+  'danger' => 'exclamation-triangle-fill'
+} %>
+
 <% flash.each do |type, msg| %> 
-  <div class="alert alert-<%= type %>" role="alert">
+  <div class="alert alert-<%= type %> alert-dismissable hstack" role="alert">
+    <svg class="bi flex-shrink-0 me-2" width="20" height="20" role="img" aria-label="Alert:"><use xlink:href='<%= "##{used_icon[type]}" %>'/></svg>
     <%= msg %>
+    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
 <% end %>

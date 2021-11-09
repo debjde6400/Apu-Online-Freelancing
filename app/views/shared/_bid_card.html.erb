@@ -1,0 +1,137 @@
+<section class="card">
+  <div class="card-body container">
+    <div class="d-md-flex justify-content-md-between">
+      <h3 class="card-title h5">
+        <% if user_wise %>
+          On : 
+          <a role="button" data-bs-toggle="offcanvas" href="#offcanvasBottom<%= bid.id %>" aria-controls="offcanvasBottom" class="stretched-link non-underlined-link">
+            <%= project.title %>
+          </a>
+
+        <% else %>
+          By : 
+          <a role="button" data-bs-toggle="offcanvas" href="#offcanvasBottom<%= bid.id %>" aria-controls="offcanvasBottom" class="stretched-link non-underlined-link">
+            <%= bid.bidding_user.name %>
+          </a>
+        <% end %>
+      </h3>
+
+    <div class="text-md-end">
+      <%= bid.status %>
+    </div>
+  </div>
+    
+
+    <div class="bid-offcanvas offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom<%= bid.id %>" aria-labelledby="offcanvasBottomLabel">
+      <div class="offcanvas-header border-bottom">
+        <h3 class="offcanvas-title" id="offcanvasBottomLabel">
+          Bid details
+        </h3>
+
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      
+      <div class="offcanvas-body">
+        <div class="d-md-flex justify-content-md-between">
+          <div class="project-officials">
+            <div>
+              By <%= link_to bid.bidding_user.name, bid.bidding_user, class: "non-underlined-link" %>
+            </div>
+
+            <div>
+              On project <%= link_to project.title, project, class: "non-underlined-link" %>
+            </div>
+          </div>
+            
+          <div class="text-md-end">
+            <span class="project-rate index-font">
+              <strong> <%= project.payment_currency %> <%= bid.amount %> </strong>
+              <%= project.payment_time_unit %>
+            </span>
+
+            <div>
+              Status : <%= bid.status %>
+            </div>
+          </div>
+        </div>
+
+        <section>
+          <p>
+            <%= bid.description %>
+          </p>
+        </section>
+
+        <div class="d-md-flex justify-content-md-between align-items-end">
+          <span class="text-muted">
+            Made on <%= bid.created_at %>
+          </span>
+
+          <% if correct_user(bid.bidding_user) && !bid.closed? %>
+            <div class="dropup text-end">
+              <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                Tasks
+              </button>
+
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <li>
+                  <%= link_to 'Edit bid', edit_bid_path(bid), class: "dropdown-item"  %>
+                </li>
+
+                <li>
+                  <a role="button" class="text-danger dropdown-item" data-bs-toggle="modal" href="#removeBidModal">
+                    Remove bid
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <%= render "shared/delete_modal", modal_name: "removeBid", modal_text: "Remove your bid from project <strong> #{project.title} </strong> ?", modal_delete_text: "Remove bid", deleted_object: @bid %>
+
+          <% elsif correct_user(project.creating_client) && !project.bidding_closed? %>
+            <div class="mt-2">
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmAwardModal">
+                Award to user
+              </button>
+            </div>
+
+          <% elsif bid.awarded? %>
+            <div class="text-muted">
+              Awarded on <%= project.bidding_closed_at %>
+            </div>          
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <% if correct_user(project.creating_client) && !project.bidding_closed? %>
+      <div class="modal fade" id="confirmAwardModal" tabindex="-1" aria-labelledby="confirmAwardModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h2 class="modal-title h4" id="confirmAwardModalLabel"> Confirm Awarding </h2>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div> 
+            <div class="modal-body">
+              Award this project to <%= bid.bidding_user.name %> ?
+            </div>
+            <div class="modal-footer">
+              <%= link_to 'Award', award_bid_path(bid), class: 'btn btn-success'  %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="card-text">
+      <p>
+        Amount : <%= project.payment_currency %> <%= bid.amount %> <%= project.payment_time_unit %>
+      </p>
+
+      <p class="text-truncate">
+        <%= bid.description %>
+      </p>
+    </div>
+  </div>
+</section>
+
+

@@ -1,7 +1,13 @@
-<h1>Projects Index</h1>
-<% @all_projects.each do |p| %>
-  <div>
-    <%= link_to (p.title.present? ? p.title : "<N/A>" ), project_path(p) %>
-    Posted by: <%= p.creating_client.name %>
+<main>
+  <div class="equally-distribute">
+    <h1>
+      Projects Index
+    </h1>
+
+    <div>
+      <%= link_to '+ New project', new_siteuser_project_path(current_user), class: "btn btn-primary" if logged_in? && current_user.client? %>
+    </div>
   </div>
-<% end %>
+
+  <%= render "shared/project_cards", project_list: @all_projects.order(created_at: :desc) %>
+</main>

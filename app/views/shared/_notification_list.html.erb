@@ -1,0 +1,12 @@
+<ul class="list-group list-group-flush">
+  <% notification_list.each do |nf| %>
+
+    <li class="list-group-item py-3 <%='bg-light' if nf.unread? %>">
+      <%= link_to nf.to_notification.message, read_notification_path(notification_id: nf), class: 'stretched-link non-underlined-link text-body' %>
+
+      <div class="timestamp text-muted">
+        <%= nf.created_at %>
+      </div>
+    </li>
+  <% end %>
+</ul>

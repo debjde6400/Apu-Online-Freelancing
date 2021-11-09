@@ -18,7 +18,7 @@ class BidRejectedNotification < Noticed::Base
   # Define helper methods to make rendering easier.
   #
   def message
-    t(".message", project_title: params[:bid].project.title)
+    t(".message", project_title: params[:bid].project.title, awarded_user: params[:accepted_bid].bidding_user.name)
   end
   
   def url

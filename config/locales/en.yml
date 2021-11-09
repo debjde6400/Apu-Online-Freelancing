@@ -32,10 +32,19 @@
 en:
   hello: "Hello world"
   notifications:
-    project_notification:
-      message: "Your project %{project_title} has a new bid."
+    new_bid_notification:
+      message: "Your project %{project_title} has a new bid from %{bidder_name}."
+    file_sent_notification:
+      message: "You have some files received on project %{project_title}."
+    project_deleted_notification:
+      message: "One of your bidded projects, titled %{project_title} has been deleted. Thus your bid on the project has been removed."
     bid_accepted_notification: 
-      message: "Your bid on project %{project_title} has been accepted."
+      message: "Your bid on project %{project_title} has been accepted. You can now start sending files to the client."
     bid_rejected_notification: 
-      message: "Your bid on project %{project_title} has been rejected."
+      message: "Your bid on project %{project_title} has been rejected. The project has been awarded to %{awarded_user}."
+
+  admin:
+    actions:
+      approve_siteuser:
+        menu: "Approve user"
     

@@ -1,0 +1,41 @@
+<main>
+  <h1>
+    Search Freelancers
+  </h1>
+
+  <div class="form-group">
+    <%= form_with url: search_freelancers_siteusers_path, method: :get, id: "freelancer_search" do |f| %>
+      <% get_all_skill.each do |key| %>
+        <div class="form-check form-check-inline">
+          <%= f.check_box :searched_skills, { class: "form-check-input", multiple: true, onclick: "$('#freelancer_search').submit()", checked: params[:searched_skills]&.include?(key.to_s) }, key, nil %>
+
+          <%= f.label key, class: "form-check-label" %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+
+  <div class="row d-flex justify-content-md-evenly">
+    <% @freelancers.each do |u| %>
+      <div class="col-md-4">
+        <section class="card flex-fill">
+          <div class="card-body container">
+            <h2 class="card-title">
+              <%= link_to u.name, siteuser_path(u), class: "stretched-link non-underlined-link" %>
+            </h2>
+
+            <div class="card-text">
+              <div>
+                <%= print_type(u) %>
+              </div>
+
+              <div>
+                <%= u.email %>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    <% end %>
+  </div>
+</main>

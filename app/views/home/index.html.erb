@@ -1,8 +1,12 @@
-<h1> Apu Online Freelancing </h1>
+<main class="intro">
+  <h1 class="display-3">
+    Apu Online Freelancing
+  </h1>
 
-Welcomes you to provide the best solutions for your freelancing needs.
+  Welcomes you to provide the best solutions for your freelancing needs.
 
-<div>
-  <%= link_to 'Projects list', all_projects_projects_path %>
-  <%= link_to 'Users list', siteusers_path %>
-</div>
+  <div class="d-flex justify-content-around mt-5">
+    <%= link_to 'Projects list', all_projects_projects_path, class: "btn btn-outline-light" %>
+    <%= link_to 'Users list', siteusers_path, class: "btn btn-outline-light" %>
+  </div>
+</main>

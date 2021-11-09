@@ -7,22 +7,18 @@
 
 <div class="form-group">
   <%= f.label :description %>
-  <%= f.text_area :description, class: "form-control" %>
+  <%= f.text_area :description, rows: "10", class: "form-control" %>
 </div>
 
-<div class="form-group">
-  <% get_all_skill.each do |key| %>
-    <%= f.check_box :skills, { multiple: true, checked: f.object.skills&.include?(key.to_s) }, key, class: "form-control" %>
-    <%= f.label key %>
-  <% end %>
-</div>
+<%= render "shared/skills_checkbox", f: f %>
 
 <div class="form-group">
   <%= f.label :highest_pay %>
+
   <div class="input-group">
-    <%= f.select :payment_currency, options_for_select(["INR", "USD", "EUR"], f.object.payment_currency || @project.payment_currency), {}, { class: "input-group-text" } %>
+    <%= f.select :payment_currency, options_for_select(["INR", "USD", "EUR"], f.object.payment_currency || @project.payment_currency || "INR"), {}, { class: "input-group-text" } %>
     <%= f.number_field :highest_pay, value: number_to_currency(f.object.highest_pay.to_f, delimiter: '', unit: ''), step: :any, class: "form-control" %>
-    <%= f.select :payment_time_unit, options_for_select(["per hour", "per day", "(onetime)"], f.object.payment_time_unit || @project.payment_time_unit), {}, { class: "input-group-text" } %>
+    <%= f.select :payment_time_unit, options_for_select(["per hour", "per day", "(onetime)"], f.object.payment_time_unit || @project.payment_time_unit || "(onetime)"), {}, { class: "input-group-text" } %>
   </div>
 </div>
 
@@ -31,12 +27,19 @@
   <%= f.file_field :client_files, class: "form-control", multiple: true %>
 </div>
 
-<% if @project.client_files.attached? %>
-  <% @project.client_files.each do |fl| %>
-    <div>
-      <%= link_to fl.filename, fl %> 
-      <%= link_to 'X', remove_attachment_path(fl), method: :delete %>
+<div class="form-group">
+  <% if @project.client_files.attached? %>
+    <label> Already attached (Cross to delete instantly) </label>
+    
+    <div class="file-list">
+      <% @project.client_files.each do |fl| %>
+        <span class="file-badge rounded-pill">
+          <%= link_to fl.filename, fl, class: "non-underlined-link" %> 
+          <%= link_to '', remove_attachment_path(fl), method: :delete, class: "btn-close" %>
+        </span>
+        
+        <%= f.hidden_field :client_files, multiple: true, value: fl.signed_id %>
+      <% end %>
     </div>
-    <%= f.hidden_field :client_files, multiple: true, value: fl.signed_id %>
   <% end %>
-<% end %>
+</div>

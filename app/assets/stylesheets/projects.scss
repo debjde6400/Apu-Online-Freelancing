@@ -1,3 +1,49 @@
 // Place all the styles related to the projects controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: https://sass-lang.com/
+
+.project-officials, .bid-officials {
+  font-size: 18px;
+}
+
+.project-description {
+  margin: 5px 0;
+}
+
+.project-rate {
+  font-size: 25px;
+}
+
+.file-list {
+  margin-top: 15px;
+}
+
+.sent-files-list {
+  height: 250px;
+  overflow-y: auto;
+}
+
+.file-badge {
+  border: 1px solid #0000FF;
+  font-size: 14px;
+  padding: 5px 15px;
+  margin-right: 10px;
+
+  .btn-close {
+    margin-left: 15px;
+  }
+}
+
+.bid-offcanvas {
+  height: 80%;
+}
+
+@media (min-width: 768px) {
+  .project-rate span {
+    display: block;
+
+    &:last-child {
+      font-size: 20px;
+    }
+  }
+}

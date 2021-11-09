@@ -1,0 +1,42 @@
+<h2>
+  Message <%= current_user?(@conversation.sender) ? @conversation.recipient.name : @conversation.sender.name %>
+</h2>
+
+<div id="messages" class="messages-list">
+  <% if @over_ten %>
+    <div class="text-center my-2">
+      <%= link_to 'Show previous', "?conversation=#{@conversation.id}&m=all" %>
+    </div>
+  <% end %>
+
+  <% @messages.each do |message| %>
+    <% if message.body %>
+      <% user = Siteuser.find(message.siteuser_id) %>
+      <div class="message">
+        <div class="hstack gap-3">
+          <strong>
+            <%= user.name %>
+          </strong>
+          
+          <span class="ms-auto text-muted">
+            <%= message.message_time %>
+          </span>
+          
+        </div>
+        
+        <div class="message-body">
+          <%= message.body.html_safe %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+</div>
+
+<%= form_with model: [@conversation, @message] do |f| %>
+  <%= f.text_field :siteuser_id, value: current_user.id, type: "hidden" %>
+
+  <div class="input-group">
+    <%= f.text_area :body, class: "form-control", rows: 1, placeholder: "Enter your message. HTML allowed." %>
+    <%= f.submit "Send", class: "btn btn-primary" %>
+  </div>
+<% end %>

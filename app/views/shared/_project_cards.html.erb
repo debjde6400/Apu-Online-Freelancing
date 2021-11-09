@@ -1,0 +1,42 @@
+<div class="row">
+  <% project_list.each do |p| %>
+    <div class="col-lg-6">
+      <section class="card">
+        <div class="card-body container">
+          <div class="equally-distribute">
+            <h2 class="card-title h5">
+              <%= link_to p.title, project_path(p), class: "stretched-link non-underlined-link" %>
+            </h2>
+          
+            <div class="project-rate index-font-size text-end d-block">
+              <%= project_rate(p) %>
+            </div>
+          </div>
+
+          <div class="card-text row">
+            <p class="text-truncate">
+              <%= p.description %>
+            </p>
+
+            <div class="col-md-4">
+              <% if current_user && current_user.freelancer? && p.awarded_freelancer == current_user %>
+                <%= link_to 'Send project files', freelancer_files_project_path(p) %>
+              <% else %>
+                <%= p.status %>
+              <% end %>
+            </div>
+        
+            <div class="col-md-8 text-muted text-md-end">
+              Posted on : <%= p.created_at %>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  <% end %>
+</div>
+
+<div class="container text-center">
+  <%= page_entries_info project_list %>
+  <%= paginate project_list %>
+</div>

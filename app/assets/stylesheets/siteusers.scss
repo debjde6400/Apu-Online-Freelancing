@@ -1,0 +1,22 @@
+// Place all the styles related to the projects controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: https://sass-lang.com/
+
+.skills {
+  line-height: 2.1;
+
+  .badge {
+    font-size: 14px;
+    margin-right: 5px;
+  }
+}
+
+.preview-profile-pic {
+  max-height: 72px;
+}
+
+.user-info {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+}

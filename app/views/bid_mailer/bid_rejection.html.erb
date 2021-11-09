@@ -1,3 +1,5 @@
 <p> Hello <%= @bid.bidding_user.name %> </p>
 
 <p> Your bid on project title <%= @bid.project.title %> has been rejected and awarded to <%= @accepted.bidding_user.name %>. </p>
+
+<%= render "shared/thanks" %>

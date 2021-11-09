@@ -2,9 +2,7 @@ class Siteuser < ApplicationRecord
   attr_accessor :remember_token, :activation_token, :reset_token
   before_save :downcase_email
   before_create :create_activation_digest
-  has_one_attached :image do |attachable|
-    attachable.variant :thumb, resize: "100x100"
-  end
+  has_one_attached :profile_pic
 
   EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   validates :email, presence: true, length: { maximum: 255 }, 
@@ -14,13 +12,32 @@ class Siteuser < ApplicationRecord
   has_secure_password
   scope :freelancers, -> { where freelancer: true }
   scope :clients, -> { where freelancer: false }
-  has_many :creating_client_projects, class_name: 'Project', foreign_key: 'creating_client_id'
+  scope :active, -> { where(approved: true, activated: true) }
+  has_many :creating_client_projects, class_name: 'Project', foreign_key: 'creating_client_id', dependent: :destroy
   has_many :awarded_freelancer_projects, class_name: 'Project', foreign_key: 'awarded_freelancer_id'
-  has_many :bidding_user_bids, class_name: 'Bid', foreign_key: 'bidding_user_id'
-  has_many :notifications, as: :recipient
+  has_many :bidding_user_bids, class_name: 'Bid', foreign_key: 'bidding_user_id', dependent: :destroy
+  has_many :notifications, as: :recipient, dependent: :destroy
+  has_noticed_notifications
+  has_noticed_notifications param_name: "bidder"
 
   def client?
     !self.freelancer?
+  end
+
+  def Siteuser.industry_based_search(searched_industries)
+    if searched_industries
+      Siteuser.active.where(industry: searched_industries)
+    else
+      Siteuser.active
+    end
+  end
+
+  def Siteuser.skill_based_freelancer_search(searched_skills)
+    if searched_skills
+      Siteuser.freelancers.active.select { |u| u.skills & searched_skills != [] }
+    else
+      Siteuser.freelancers.active
+    end
   end
 
   def Siteuser.digest(string)
@@ -74,12 +91,16 @@ class Siteuser < ApplicationRecord
     reset_sent_at < 2.hours.ago
   end
 
-  def displayed_image
-    if image.attached?
-      image.variant(resize: '400X400!').processed
-    else
-      "56939.jpg"
+  def has_unread_messages?
+    conversations = Conversation.involving(id).eager_load(:messages)
+
+    conversations.each do |c| 
+      if c.unread_messages(self.id).present?
+        return true
+      end
     end
+    
+    return false
   end
 
   private

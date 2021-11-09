@@ -3,16 +3,10 @@
 <%= form_with model: @bid do |f| %>
   <%= render "shared/form_errors", form: f %>
 
-  <div class="form-group">
-    <%= f.label :amount %>
-    <%= f.text_field :amount, class: "form-control" %>
-  </div>
+  <%= render "form", { f: f, p: @bid.project } %>
 
-  <div class="form-group">
-    <%= f.label :description %>
-    <%= f.text_area :description, class: "form-control" %>
+  <div class="d-grid d-md-flex">
+    <%= f.submit "Update Bid", class: "btn btn-primary" %>
   </div>
-
-  <%= f.submit "Update Bid", class: "btn btn-primary" %>
 <% end %>
 

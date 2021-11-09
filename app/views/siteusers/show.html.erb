@@ -16,57 +16,74 @@
       <% end %>
 
       <section class="personal-details">
-        <div>
-          <%= image_tag("envelope.svg", width: "24") %>
-          <%= @user.email %>
-        </div>
-
-        <div>
-          <%= image_tag("phone.svg", width: "24") %>
-          <%= @user.mobile %>
-        </div>
-
-        <div>
-          <%= image_tag("home_black_24dp.svg", width: "24") %>
-          <%= @user.address %>
-        </div>
-        
-        <div>
-          <%= image_tag("school_black_24dp.svg", width: "24") %>
-          <%= @user.qualification %>
-        </div>
-
-        <div>
-          <%= image_tag("construction_black_24dp.svg", width: "24") %>
-          <%= @user.industry %>
-        </div>
+        <%= render "user_info", dim: 20, aria_label: "Email:", id: "bi-envelope", attribute: @user.email %>
+        <%= render "user_info", dim: 20, aria_label: "Phone:", id: "bi-phone", attribute: @user.mobile %>
+        <%= render "user_info", dim: 20, aria_label: "Address:", id: "bi-house-door", attribute: @user.address %>
+        <%= render "user_info", dim: 20, aria_label: "Qualification:", id: "bi-easel", attribute: @user.qualification %>
+        <%= render "user_info", dim: 20, aria_label: "Industry:", id: "bi-gear-wide-connected", attribute: @user.industry %>
       </section>
-
-      <section class="skills">
-        <h2>
-          Skills
-        </h2>
-
-        <% @user.skills.each do |s| %>
-          <span class="badge bg-dark">
-            <%= s.capitalize %>
-          </span>
-        <% end %>
-      </section>
-
-      <section class="experience">
-        <h2>
-          Experience
-        </h2>
-
-        <%= @user.experience %>
-      </section>
-
-      <%= link_to 'Edit details', edit_siteuser_path(@user), class: "btn btn-primary" if current_user? @user %>
     </div>
 
-    <div class="col-md-3">
-      <%= image_tag @user.displayed_image, loading: "lazy", alt: @user.name, class: "img-thumbnail" %>
+    <div class="col-md-3 equally-distribute d-md-block text-md-end">
+      <%= image_tag @user.profile_pic.variant(resize_to_limit: [150, 150]).processed, loading: "lazy", alt: @user.name, class: "img-thumbnail" %>
+
+      <div class="dropdown mt-md-3">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+          Tasks
+        </button>
+
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+          <% if @user.freelancer? %>
+            <li>
+              <%= link_to 'View bid history', bid_history_siteuser_path(@user), class: "dropdown-item" %>
+            </li>
+          
+          <% else %>
+            <li>
+              <%= link_to 'View posted projects', siteuser_projects_path(@user), class: "dropdown-item"  %>
+            </li>
+          <% end %>
+
+          <% if current_user? @user %>
+            <li>
+              <%= link_to 'Edit details', edit_siteuser_path(@user), class: "dropdown-item"  %>
+            </li>
+
+            <li>
+              <a role="button" class="text-danger dropdown-item" data-bs-toggle="modal" href="#confirmDeleteUserModal">
+                Delete account
+              </a>
+            </li>
+
+          <% elsif current_user && current_user.client? %>
+            <li>
+              <%= link_to "Message #{@user.name}", conversations_path(sender_id: current_user.id, recipient_id: @user.id), method: 'post', class: "dropdown-item" %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+
+      <% if current_user? @user %>
+        <%= render "shared/delete_modal", modal_name: "confirmDeleteUser", modal_text: "Confirm deleting your account?", modal_delete_text: "Delete your account", deleted_object: @user %>
+      <% end %>
     </div>
   </div>
+
+  <section>
+    <%= render "shared/skills_section", object: @user %>
+  </section>
+
+  <section class="experience">
+    <h2>
+      Experience
+    </h2>
+
+    <p>
+      <% if @user.experience %>
+        <%= @user.experience %>
+      <% else %>
+        This user has not listed any experience.
+      <% end %>
+    </p>
+  </section>
 </main>

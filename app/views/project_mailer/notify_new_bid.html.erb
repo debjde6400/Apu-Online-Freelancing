@@ -1,0 +1,7 @@
+<p> Hello <%= @project.creating_client.name %>, </p>
+
+<p>
+  Your project <%= link_to @project.title, @project %> has a new bid from <%= link_to @user.name, @user %>.
+</p>
+
+<%= render "shared/thanks" %>

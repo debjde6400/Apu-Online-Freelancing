@@ -1,29 +1,55 @@
-<h1>
-  All users
-</h1>
+<main>
+  <div class="row">
+    <div class="col-md-4 conversation-pane">
+      <h1 class="h2">
+        Conversations
+      </h1>
 
-<div>
-  <% @freelancers.each do |u| %>
-    <%= link_to "Message #{u.name}", conversations_path(sender_id: current_user.id, recipient_id: u.id), method: 'post' if u != current_user %>
-  <% end %>
-</div>
+      <% if @conversations.empty? || (@conversations.select { |c| c.messages.present? }).empty? %>
+        <div class="text-muted d-flex justify-content-center pt-5">
+          No conversations yet.
+        </div>
+      
+      <% else %>
+        <div class="list-group">
+          <% @conversations.each do |conversation| %>
+            <% if conversation.sender_id == current_user.id || conversation.recipient_id == current_user.id %>
+              <% if conversation.sender_id == current_user.id %>
+                <% recipient = Siteuser.find(conversation.recipient_id) %>
+              <% else %>
+                <% recipient = Siteuser.find(conversation.sender_id) %>
+              <% end %>
 
-<h2>
-  Conversations
-</h2>
+              <% if conversation.messages.present? %>          
+                <div class="list-group-item hstack gap-3">
+                  <%= image_tag recipient.profile_pic.variant(resize_to_limit: [48, 48]).processed, loading: "lazy", alt: recipient.name, class: "sender-icon" %>
+                  
+                  <div class="overflow-hidden">
+                    <strong class="mb-3">
+                      <%= link_to recipient.name, conversation_messages_path(conversation), class: "sender-name non-underlined-link stretched-link" %>
+                    </strong>
+                    
+                    <div class="text-truncate pt-2">
+                      <%= conversation.messages.last.body %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
 
-<% @conversations.each do |conversation| %>
-  <% if conversation.sender_id == current_user.id || conversation.recipient_id == current_user.id %>
-    <% if conversation.sender_id == current_user.id %>
-      <% recipient = Siteuser.find(conversation.recipient_id) %>
-    <% else %>
-      <% recipient = Siteuser.find(conversation.sender_id) %>
-    <% end %>
+    <div class="col-md-8 messages-pane" id="messages">
+      <% if params[:conversation] %>
+        <%= render 'messages/index' %>
 
-    <% unless current_user.id == conversation.recipient_id %>
-      <div>
-        <%= link_to recipient.name, conversation_messages_path(conversation) %>
-      </div>
-    <% end %>
-  <% end %>
-<% end %>
+      <% elsif !@conversations.empty? && (@conversations.select { |c| c.messages.present? }).present? %>
+        <div class="text-muted d-flex justify-content-center pt-5">
+          Click on a chat to view its messages.
+        </div>
+      <% end %>
+    </div>
+  </div>
+</main>

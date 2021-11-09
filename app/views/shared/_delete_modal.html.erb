@@ -1,0 +1,18 @@
+<div class="modal fade" id="<%= modal_name %>Modal" tabindex="-1" aria-labelledby="<%= modal_name %>ModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title h4" id="<%= modal_name %>ModalLabel"> Confirm Deletion </h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div> 
+
+      <div class="modal-body">
+        <%= modal_text.html_safe %>
+      </div>
+
+      <div class="modal-footer">
+        <%= link_to modal_delete_text, deleted_object, method: :delete, class: "btn btn-danger" %>
+      </div>
+    </div>
+  </div>
+</div>

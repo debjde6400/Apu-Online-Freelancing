@@ -1,44 +1,159 @@
-<h1>
-  <%= @project.title %>
-</h1>
+<main>
+  <div class="row">
+    <section class="col-md-9">
+      <h1>
+        <%= @project.title %>
+      </h1>
 
-<div>
-  <%= @project.description %>
-</div>
+      <div class="project-officials">
+        <div>
+          By : <%= link_to @project.creating_client.name, @project.creating_client, class: "non-underlined-link" %> <%= display_you(@project.creating_client) %>
+        </div>
 
-<div>
-  Posted by : <%= @project.creating_client.name %>
-</div>
+        <% if !@project.freelancer_awarded? %>
+          <div>
+            Awarded successfully to : <%= link_to @project.awarded_freelancer.name, @project.awarded_freelancer, class: "non-underlined-link" %> <%= display_you(@project.awarded_freelancer) %>
+          </div>
+        <% end %>
+      </div>
 
-<% if !@project.awarded_freelancer.nil? %>
-  Awarded to : <%= @project.awarded_freelancer.name %>
-  <%= link_to 'Send project files', freelancer_files_project_path if logged_in? %>
-<% end %>
+      <section class="project-details">
+        <h2>
+          Description
+        </h2>
+        
+        <p class="description">
+          <%= @project.description %>
+        </p>
+        
+        <% if @project.client_files.attached? %>
+          <section>
+            <h2>
+              Files by client
+            </h2>
 
-<div>
-  <% if @project.client_files.attached? %>
-    <% @project.client_files.each do |cf| %>
-      <%= link_to cf.filename, cf %>
-    <% end %>
-  <% end %>
-</div>
+            <div class="file-list">
+              <% @project.client_files.each do |fl| %>
+                <span class="file-badge rounded-pill">
+                  <%= link_to fl.filename, fl, class: "non-underlined-link" %>
+                </span>
+              <% end %>
+            </div>
+          </section>
+        <% end %>
+      </section>
 
-<%= link_to "Edit", edit_project_path(@project), class: "btn btn-primary" if correct_user @project.creating_client %>
+      <%= render "shared/skills_section", object: @project %>
+    </section>
 
-<% if logged_in? && current_user.freelancer? %>
-  <% if @user_bid.empty? %>
-    <%= link_to "Bid for it", new_project_bid_path(@project), class: "btn btn-primary" %>
-  <% else %>
-    <%= link_to "Show your bid", bid_path(@user_bid), class: "btn btn-primary" %>
-  <% end %>
-<% end %>
+    <section class="col-md-3 text-md-end">
+      <div class="project-rate">  
+        <h2 class="h3">
+          Bid limit 
+        </h2>
 
-<%= link_to 'View all bids', project_bids_path(@project), class: "btn btn-primary" %>
+        <%= project_rate(@project) %>
+      </div>
 
-<% if logged_in? %>
-  <% if current_user != @project.creating_client %>
-    <%= link_to "Message #{@project.creating_client.name}", conversations_path(sender_id: current_user.id, recipient_id: @project.creating_client.id), method: 'post' %>
-  <% else %>
-    <%= link_to "Conversations", conversations_path %>
-  <% end %>
-<% end %>
+      <% if logged_in? %>
+        <section>
+          <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+              Tasks
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+              <% if current_user != @project.creating_client %>
+                <li>
+                  <%= link_to "Message #{@project.creating_client.name}", conversations_path(sender_id: current_user.id, recipient_id: @project.creating_client.id), method: 'post', class: "dropdown-item" %>
+                </li>
+
+                <% if current_user? @project.awarded_freelancer %>
+                  <li>
+                    <%= link_to 'Send project files', freelancer_files_project_path, class: "dropdown-item" %>
+                  </li>
+                <% end %>
+
+              <% else %>
+                <li>
+                  <%= link_to 'Search freelancers', search_freelancers_siteusers_path(searched_skills: @project.skills), class: "dropdown-item" %>
+                </li>
+
+                <li>
+                  <%= link_to 'View freelancer sent files', freelancer_files_project_path, class: "dropdown-item" %>
+                </li>
+
+                <li>
+                  <%= link_to "Edit details", edit_project_path(@project), class: "dropdown-item" %>
+                </li>
+                
+                <li>
+                  <a role="button" class="text-danger dropdown-item" data-bs-toggle="modal" href="#confirmDeleteProjectModal">
+                    Delete project
+                  </a>
+                </li>
+              <% end %>              
+            </ul>
+          </div>
+
+          <% if current_user? @project.creating_client %>
+            <%= render "shared/delete_modal", modal_name: "confirmDeleteProject", modal_text: "Confirm deleting project titled <strong> #{@project.title} </strong> ?", modal_delete_text: "Delete project", deleted_object: @project %>
+          <% end %>
+        </section>
+      <% end %>
+    </section>
+  </div>
+
+  <section class="bids">
+    <div class="row">
+      <% if !@project.freelancer_awarded? %>
+        <div class="col-lg-6">
+          <h2>
+            Awarded bid details
+          </h2>
+
+          <%= render "shared/bid_card", { bid: @awarded_bid[0], project: @project, user_wise: false } %>
+        </div>
+      <% end %>
+
+      <% if logged_in? && current_user.freelancer? && !(current_user? @project.awarded_freelancer) %>
+        <div class="col-lg-6">
+          <h2>
+            Your bid details
+          </h2>
+
+          <% if @user_bid.empty? %>
+            <p>
+              <% if @project.skills & current_user.skills != [] %>
+                No bid from you. <%= link_to "Make a bid", new_project_bid_path(@project) %>
+              <% else %>
+                Your skills don't match with the project skills, so you can't bid here.
+              <% end %>
+            </p>
+          
+          <% else %>
+            <%= render "shared/bid_card", { bid: @user_bid[0], project: @project, user_wise: false } %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+    
+
+    <h2>
+      <%= bid_heading(@project) %>
+    </h2>
+
+    <div class="row">
+      <% @bids.each do |b| %>
+        <div class="col-lg-6">
+          <%= render "shared/bid_card", bid: b, project: @project, user_wise: false %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="container text-center">
+      <%= page_entries_info @bids %>
+      <%= paginate @bids %>
+    </div>
+  </section>
+</main>

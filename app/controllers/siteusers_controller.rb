@@ -1,10 +1,10 @@
 class SiteusersController < ApplicationController
-  before_action :logged_in_user, only: [:edit, :update, :destroy]
-  before_action :get_user_by_id, only: [:show, :edit, :update, :destroy, :posted_projects, :current_bids, :correct_user]
+  before_action :logged_in_user, only: [:edit, :update, :destroy, :check_client]
+  before_action :get_user_by_id, only: [:show, :edit, :update, :destroy, :bid_history, :correct_user]
   before_action :correct_user, only: [:edit, :update, :destroy]
 
   def index
-    @users = Siteuser.all
+    @users = Siteuser.industry_based_search(params[:searched_industries]).page(params[:page])
   end
 
   def new
@@ -13,8 +13,13 @@ class SiteusersController < ApplicationController
 
   def create
     @user = Siteuser.new(siteuser_params)
+
+    if !@user.image.present?
+      @user.image.attach(io: File.open(Rails.root.join('app', 'assets', 'images', '56939.jpg')), filename: '56939.jpg', content_type: 'image/jpg')
+    end
+
     if @user.save
-      redirect_to root_url, flash: { notice: "Joining request sent to admin. Once approved, an activation mail will be sent to you. Thanks." }
+      redirect_to root_url, flash: { success: "Joining request sent to admin. Once approved, an activation mail will be sent to you. Thanks." }
     else
       render :new
     end
@@ -29,7 +34,9 @@ class SiteusersController < ApplicationController
   def update
     if @user.update(siteuser_params)
       redirect_to @user, flash: { success: "Profile successfully updated." }
+    
     else
+      flash[:warning] = "Some error occurred. Check your edits."
       render 'edit'
     end
   end
@@ -37,24 +44,29 @@ class SiteusersController < ApplicationController
   def destroy
     if current_user? @user || current_user.admin?
       @user.destroy
-      redirect_to root_path, notice: "Successfully removed account."
+      redirect_to root_path, flash: { success: "Successfully removed account." }
+    
     else
-      redirect_to root_path, danger: "You can delete your account only."
+      redirect_to root_path, flash: { danger: "You can delete your account only." }
     end
   end
 
-  def current_bids
-    @current_bids = @user.bidding_user_bids.where(closed: false)
+  def bid_history
+    @bid_history = @user.bidding_user_bids.includes([:project, :bidding_user]).page(params[:page])
+  end
+
+  def search_freelancers
+    @freelancers = Siteuser.skill_based_freelancer_search(params[:searched_skills])
   end
 
   private
   
   def siteuser_params
-    params.require(:siteuser).permit(:name, :email, :mobile, :address, :image, :freelancer, :qualification, :experience, :industry, :password, :password_confirmation, skills: [])
+    params.require(:siteuser).permit(:name, :email, :mobile, :address, :image, :freelancer, :qualification, :experience, :industry, :password, :password_confirmation, skills: [], searched_industries: [], searched_skills: [])
   end
 
   def correct_user
-    redirect_to(root_url) unless current_user? @user
+    redirect_to(root_url, flash: { danger: "No editing of other's details." }) unless current_user? @user
   end
 
   def get_user_by_id

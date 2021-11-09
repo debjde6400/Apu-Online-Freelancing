@@ -1,0 +1,47 @@
+// Place all the styles related to the projects controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: https://sass-lang.com/
+
+$separating-border: 1px solid #ced4da;
+
+.message {
+  padding: 10px 15px 10px 25px;
+}
+
+.messages-pane {
+  padding-top: 30px;
+  
+  .input-group {
+    padding-top: 15px;
+  }
+}
+
+.messages-list {
+  margin-top: 25px;
+  height: 365px;
+  overflow-y: scroll;
+  border: $separating-border;
+}
+
+.conversation-pane .list-group {
+  padding-top: 15px;
+  padding-bottom: 30px;
+  border-bottom: $separating-border;
+  max-height: 400px;
+}
+
+.sender-name {
+  font-size: 18px;
+}
+
+@media (min-width: 768px) {
+  .conversation-pane .list-group {
+    border-bottom: none;
+  }
+  
+  .messages-pane {
+    padding-left: 25px;
+    padding-top: 0;
+    border-left: $separating-border;
+  }
+}

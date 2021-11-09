@@ -3,7 +3,24 @@ class ConversationsController < ApplicationController
 
   def index
     @freelancers = Siteuser.freelancers
-    @conversations = Conversation.all
+    @conversations = Conversation.involving(current_user.id).includes([:messages])
+    
+    if params[:conversation]
+      @conversation = Conversation.find(params[:conversation])
+      @messages = @conversation.messages
+
+      if @messages.length > 10
+        @over_ten = true
+        @messages = @messages[-10..-1]
+      end
+
+      if params[:m]
+        @over_ten = false
+        @messages = @conversation.messages
+      end
+
+      @message = @conversation.messages.new
+    end
   end
 
   def create
@@ -12,6 +29,7 @@ class ConversationsController < ApplicationController
     else
       @conversation = Conversation.create!(conversation_params)
     end
+    
     redirect_to conversation_messages_path(@conversation)
   end
 

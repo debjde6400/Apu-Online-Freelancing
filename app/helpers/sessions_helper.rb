@@ -52,4 +52,10 @@ module SessionsHelper
   def store_location
     session[:forwarding_url] = request.url if request.get?
   end
+
+  def display_you(siteuser)
+    if current_user? siteuser
+      "<span class='text-muted'> (You) </span> ".html_safe
+    end
+  end
 end

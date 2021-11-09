@@ -6,13 +6,12 @@
     <%= f.text_field :name, class: 'form-control' %>
   </div>
 
-  <div class="custom-group-user">
-      <%= f.radio_button :freelancer, true, class: "btn-check" %>
-      <%= f.label :freelancer, "I'm a Freelancer", value: "true", class: "btn btn-outline-primary" %>
-      
-      <%= f.radio_button :freelancer, false, checked: true, class: "btn-check" %>
-      <%= f.label :freelancer, "I'm a Client", value: "false", class: "btn btn-outline-primary" %>
-      
+  <div class="d-flex justify-content-around">
+    <%= f.radio_button :freelancer, true, checked: (f.object.freelancer? ? true : false ), class: "btn-check" %>
+    <%= f.label :freelancer, "I'm a Freelancer", value: "true", class: "btn btn-outline-primary" %>
+    
+    <%= f.radio_button :freelancer, false, checked: (f.object.freelancer? ? false : true ), class: "btn-check" %>
+    <%= f.label :freelancer, "I'm a Client", value: "false", class: "btn btn-outline-primary" %>
   </div>
   
   <div class="form-group">
@@ -30,38 +29,48 @@
     <%= f.text_area :address, class: 'form-control' %>
   </div>
 
-  <div class="form-group">
-    <%= f.label :image, class: "form-label" %>
-    <%= f.file_field :image, class: "form-control" %>
-  </div>
-  
-  <div class="form-group">
-    <%= f.label :qualification, "Qualification (Set None if registering as client)", class: "form-label" %>
-    <%= f.select :qualification, options_for_select(["None", "Class 12 or below", "Bachelor degree", "Masters degree", "Doctorate"], f.object.qualification || @user.qualification), {}, { class: "form-select" } %>
-  </div>
-  
-  <div class="form-group">
-    <%= f.label :experience, class: "form-label" %>
-    <%= f.text_area :experience, class: 'form-control', placeholder: "Freelancers can describe their work positions along with time periods here. Clients can provide a brief description of establishments and  technologies handled by them." %>
-  </div>
+  <div class="d-flex justify-content-between align-items-center">
+    <div class="form-group">
+      <%= f.label :profile_pic, class: "form-label" %>
+      <%= f.file_field :profile_pic, class: "form-control" %>
+    </div>
 
-  <%= f.label :skills, "Choose your skills", class: "form-label" %>
-
-  <div class="form-group">
-    <% get_all_skill.each do |key| %>
-      <div class="form-check form-check-inline">
-        <%= f.check_box :skills, { class: "form-check-input", multiple: true, checked: f.object.skills&.include?(key.to_s) }, key, nil %>
-        <%= f.label key, class: "form-check-label" %>
-      </div>
+    <% if edit %>
+      <%= image_tag f.object.profile_pic.variant(resize_to_limit: [72, 72]).processed, loading: "lazy", alt: f.object.name, class: "preview-profile-pic img-thumbnail" %>
     <% end %>
   </div>
   
   
+  <div class="form-group">
+    <%= f.label :qualification, class: "form-label" %>
+    <%= f.select :qualification, options_for_select(["None", "Class 12 or below", "Bachelor degree", "Masters degree", "Doctorate"], f.object.qualification || @user.qualification), {}, { class: "form-select" } %>
+    
+    <span class="form-text">
+      You may set it as None if registering as client
+    </span>
+  </div>
+  
+  <div class="form-group">
+    <%= f.label :experience, class: "form-label" %>
+    <%= f.text_area :experience, rows: "10", class: 'form-control', placeholder: "Describe your work experience here. " %>
+
+    <span class="form-text">
+      Freelancers can describe their work positions along with time periods here. <br> Clients can provide a brief description of establishments and technologies handled by them.
+    </span>
+  </div>
+  
+  <%= render "shared/skills_checkbox", f: f %>
   
   <div class="form-group">
     <%= f.label :industry, class: "form-label", class: "form-label" %>
     <%= f.select :industry, options_for_select(get_all_industry, f.object.industry || @user.industry), {}, { class: "form-select" } %>
   </div>
+
+  <% if edit %>
+    <h2 class="h5">
+      Optional : Change Password
+    </h2>
+  <% end %>
   
   <div class="form-group">
     <%= f.label :password, class: "form-label" %>

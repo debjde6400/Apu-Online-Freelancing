@@ -65,6 +65,7 @@ ActiveRecord::Schema.define(version: 2021_10_06_183946) do
     t.text "body"
     t.bigint "conversation_id"
     t.bigint "siteuser_id"
+    t.datetime "read_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["conversation_id"], name: "index_messages_on_conversation_id"
@@ -90,6 +91,7 @@ ActiveRecord::Schema.define(version: 2021_10_06_183946) do
     t.string "payment_time_unit"
     t.string "payment_currency"
     t.boolean "bidding_closed", default: false
+    t.datetime "bidding_closed_at", precision: 6
     t.bigint "creating_client_id", null: false
     t.bigint "awarded_freelancer_id"
     t.datetime "created_at", precision: 6, null: false

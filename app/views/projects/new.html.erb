@@ -1,6 +1,13 @@
-<%= form_with model: [@user, @project] do |f| %>
+<main>
+  <h1>
+    New Project
+  </h1>
 
-  <%= render "form", f: f %>
+  <%= form_with model: [@user, @project] do |f| %>
 
-  <%= f.submit "Create", class: "btn btn-primary" %>
-<% end %>
+    <%= render "form", f: f %>
+
+    <%= f.submit "Create", class: "btn btn-primary" %>
+  <% end %>
+</main>
+

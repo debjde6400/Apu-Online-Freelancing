@@ -6,4 +6,8 @@ class Message < ApplicationRecord
   def message_time
     created_at.strftime("%d/%m/%y at %l:%M %p")
   end
+
+  def mark_as_read
+    update_attribute(:read_at, Time.now)
+  end
 end

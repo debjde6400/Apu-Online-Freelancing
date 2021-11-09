@@ -1,72 +1,117 @@
 <main>
   <div class="row">
-    <div class="col-md-9">
-      <h1>
-        Dashboard
-      </h1>
+    <div class="col-8 col-md-9">
+      <div class="d-md-flex justify-content-md-between align-items-md-center">
+        <h1>
+          Dashboard
+        </h1>
 
-      <%= link_to 'View your profile', siteuser_path(current_user), class: "btn btn-primary" %>
+        <%= link_to 'View your profile', siteuser_path(current_user), class: "btn btn-primary" %>
+      </div>
+      
 
       <section class="dashboard-stats">
         <% if current_user.client? %>
+          <div class="d-flex justify-content-between">
+            <div>
+              <div class="project-count">
+                <%= current_user.creating_client_projects.count %> 
+              </div>
+              projects posted
+            </div>
+            
+            <div>
+              <div class="project-count">
+                <%= current_user.creating_client_projects.where.not(awarded_freelancer_id: nil).count %> 
+              </div>
+              project bids accepted
+            </div>
+          </div>
+
+        <% else %>
+          <div class="equally-distribute">
+            <div>
+              <div class="project-count">
+                <%= current_user.bidding_user_bids.count %> 
+              </div>
+              total bids made
+            </div>
+            
+            <div>
+              <div class="project-count">
+                <%= @accepted_projects.count %> 
+              </div>
+              project bids accepted
+            </div>
+          </div>
+        <% end %>
+      </section>
+    </div>
+
+    <div class="col-4 col-md-3 text-md-end">
+      <%= image_tag current_user.profile_pic.variant(resize_to_limit: [150, 150]).processed, loading: "lazy", alt: current_user.name, class: "img-thumbnail" %>
+    </div>
+  </div>
+
+  <% if current_user.client? %>
+    <section class="all-projects">
+      <div class="d-md-flex justify-content-md-between align-items-baseline">
         <h2>
           Your projects
         </h2>
         
-        <div>
-          <span class="project-count">
-            <%= current_user.creating_client_projects.count %> 
-          </span>
-
-          project(s) posted
+        <div class="d-flex justify-content-between align-items-baseline">
+          <%= link_to 'Get freelancers for your project', search_freelancers_siteusers_path, class: "me-4" %>
+          <%= link_to '+ New project', new_siteuser_project_path(current_user), class: "btn btn-primary" %>
         </div>
-        
-        <section class="all-projects">
-          <% current_user.creating_client_projects.each do |p| %>
-          <div>
-            <div>
-              <%= link_to p.title, project_path(p), class: 'project-link' %>
-            </div>
-            <div>
-              Posted on <%= p.created_at %>
-            </div>
-          </div>
-          <% end %>
-        </section>
+      </div>
+      
+      <%= render "shared/project_cards", project_list: current_user.creating_client_projects.page(params[:page]) %>
+    </section>    
 
-          <div>
-            <%= link_to '+ New project', new_siteuser_project_path(current_user), class: "btn btn-primary" %>
-          </div>
+  <% else %>
+    <section class="all-projects">
+      <section>
+        <h2>
+          Your ongoing projects
+        </h2>
 
+        <% if @accepted_projects.empty? %>
+          You are not actively working on any project.
+          
         <% else %>
-          <%= link_to 'View your bids', current_bids_siteuser_path(current_user), class: "btn btn-primary" %>
+          <%= render "shared/project_cards", project_list: @accepted_projects %>
         <% end %>
       </section>
 
-    </div>
+      <section>
+        <div class="d-md-flex justify-content-md-between align-items-baseline">
+          <h2>
+            Your pending bids (latest)
+          </h2>
 
-    <div class="col-md-3">
-      <%= image_tag current_user.displayed_image, loading: "lazy", alt: current_user.name, class: "img-thumbnail" %>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md">
-      <h2>
-        Notifications
-      </h2>
-
-      <% current_user.notifications.newest_first.each do |nf| %>
-        <div class="notification">
-          <div>
-            <%= nf.to_notification.message %>
-          </div>
-
-          <div class="timestamp">
-            <%= nf.created_at %>
-          </div>
+          <%= link_to 'View bid history', bid_history_siteuser_path(current_user), class: "btn btn-primary" %>
         </div>
-      <% end %>
-    </div>
-  </div>
+        
+
+        <% if @current_bids.empty? %>
+          <%= not_specified("pending bids") %>
+          
+        <% else %>
+          <div class="row">
+            <% @current_bids.each do |b| %>
+              <div class="col-lg-6">
+                <%= render "shared/bid_card", bid: b, project: b.project, user_wise: true %>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="container text-center">
+            <%= page_entries_info @current_bids, entry_name: "pending bid" %>
+            <%= paginate @current_bids, param_name: :page1 %>
+          </div>
+        <% end %>
+      </section>
+    </section>
+  <% end %>
 </main>
